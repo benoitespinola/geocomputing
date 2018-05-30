@@ -27,7 +27,7 @@ You can get started (specially the IT person, but it is good that the PI has som
 ## Simple cPouta course environment setup
 The basic structure of a cPouta course environment has two main components:
 - the cPouta environment: a virtual machine (VM), often called instance, which has a specific OS and its network configuration (especially the firewall rules). Note that some of the access and network configuration must be also configured in the software installed to the VM (e.g. PostgreSQL database firewall rules).
-- the software and setup that is necessary for the course. This is installed to the VM created in previous step. * 
+- the software and setup that is necessary for the course. This is installed to the VM created in previous step. *
 
 Seting up the cPouta environment is a quite general step requiring some IT expertise, for guidance see the [cPouta user guide](https://research.csc.fi/pouta-user-guide). Some specific settings (e.g. what ports need to be open) depend on the software and the course requirements.
 
@@ -37,3 +37,8 @@ As an example, you can follow the instructions on [how to set up a single VM Geo
 Please, contact servicedesk@csc.fi if you have any questions.
 
 (*) Note that the software installation could be also packed as containers (e.g. Dockers), in that case several "course software environments" (containers) would likely be running inside a VM... making for a somewhat more complex use case.
+
+## Using cPouta Cloud environmnet for own software installations
+The Biosciences team at CSC has some good video tutorials on how to manage cPouta for setting up software environments:
+
+https://research.csc.fi/using-cpouta-for-biosciences
