@@ -38,7 +38,19 @@ Please, contact servicedesk@csc.fi if you have any questions.
 
 (*) Note that the software installation could be also packed as containers (e.g. Dockers), in that case several "course software environments" (containers) would likely be running inside a VM... making for a somewhat more complex use case.
 
-## Using cPouta Cloud environmnet for own software installations
-The Biosciences team at CSC has some good video tutorials on how to manage cPouta for setting up software environments:
+## Other resources to learn cPouta management
+
+### Using cPouta Cloud environmnet for own software installations
+The Biosciences team at CSC has a collection of good video tutorials on how to manage cPouta for setting up software environments:
 
 https://research.csc.fi/using-cpouta-for-biosciences
+
+### CSC webinars about cPouta
+
+- [Introduction to CSC's OpenStack cPouta cloud, Kalle Happonen & Jukka Nousiainen (ELIXIR-FI)](https://www.youtube.com/watch?v=1OSe7Fr_c7g)
+- [Webinar: Creating a Virtual Machine in cPouta](https://www.youtube.com/watch?v=CIO8KRbgDoI)
+
+**Advanced topics**
+- [Webinar: First steps into automating cPouta deployments with Ansible](https://www.youtube.com/watch?v=m81gmCXF21E)
+- [Webinar: Virtual Machine and basic web service deployment with Ansible](https://www.youtube.com/watch?v=Qvd0-zI4yvw) plus the [pouta-ansible-demo instructions](https://github.com/CSCfi/pouta-ansible-demo) in github.
+-
