@@ -15,9 +15,11 @@ See [registering as CSC's customer](https://research.csc.fi/accounts-and-project
 
 ### Creating a new cPouta project
 This is a necessary step for every course. You need to:
-1- Create a new CSC project, see [Opening a new CSC Project](https://research.csc.fi/accounts-and-projects). The course's responsible person acts is the PI who requests the project.  You can add project member's (for ex the IT person) when creating the project. You should get an email confirming the project's creation in short time (within minutes). If you cannot find it, look in your spam folder and contact servicedesk@csc.fi.
 
-2- Request cPouta service to your project, see [Adding computing services](https://research.csc.fi/accounts-and-projects). By default, new projects are created without any service so you need to request cPouta to be added via the SUI interface. You should also get an email confirming that the service is active.
+1. Create a new CSC project, see 1.4.1 Opening an academic CSC project and inviting members in [CSC computing environment user guide](https://research.csc.fi/csc-guide/). The course's responsible person acts as the PI who requests the project. You can add project members (to give administrative rights) when creating the project. You should get an email confirming the project's creation in short time (within minutes). If you cannot find it, look in your spam folder and contact servicedesk@csc.fi.
+
+2. Request cPouta service to your project, see 1.4.2 Adding computing resources (Taito, Sisu, cPouta) in [CSC computing environment user guide](https://research.csc.fi/csc-guide/). By default, new projects are created without any service so you need to request cPouta to be added via the SUI interface. You should also get an email confirming that the service is active.
+
 
 Once you have a project with cPouta service activated you can log in at: https:://pouta.csc.fi
 
