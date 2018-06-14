@@ -390,7 +390,7 @@ ALLOWED_HOSTS = ['django','193.167.189.204','localhost','127.0.0.1','::1'] if os
     else re.split(r' *[,|:|;] *', os.getenv('ALLOWED_HOSTS'))
 
 PROXY_ALLOWED_HOSTS += ('nominatim.openstreetmap.org','193.167.189.204','localhost','127.0.0.1','::1')
-```
+``` 
 
 Reset paver: paver reset_hard (only stoping and start does not take changes into effect)
 
