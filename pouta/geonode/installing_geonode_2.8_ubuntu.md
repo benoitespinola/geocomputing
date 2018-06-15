@@ -1,26 +1,40 @@
 # Installation of Geonode in Ubuntu16.04
-Start with a clean Ubuntu16.04 virtual machine. It can be a GUI machine or a server machine and it can be running in VirtualBox or cPouta.
+Start with a clean Ubuntu16.04 virtual machine. It can be a GUI machine or a server machine and it can be running locally in for ex. VirtualBox or in the cloud in for ex CSC's cPouta.
 
-Some differences may arise depending on the starting machine and what is installed in it by default. For example the tests with a Ubuntu server machine have commonly needed the installation of some software that was not needed for in the GUI tests. The differences are marked with for ex. **Note-server-vm:...**.
+Some differences may arise depending on the starting machine and what is installed in it by default. For example the tests with a default Ubuntu 16.04 server machine have commonly needed the installation of some packages that were not needed when using a default Ubuntu 16.04 GUI machine. The differences are marked with **Note-server-vm: ...** .
 
-The following instructions are based on the official documentation at:
+The following instructions are based on the official documentation but include some modifications. The full set of minimum installation commands and settings is found here so you only need to follow these instruction.
+
+For reference, the official documentation can be found at:
 http://docs.geonode.org/en/master/tutorials/install_and_admin/geonode_install/
 
-The commands we needed to run are all copied here from the official documentation, those may not be explained in detail as they already are in the official tutorial. Things that were not up-to-date and/or necessary extra steps and/or important notes are the main contribution to the official documentation.
+The instructions below have been tested in VirtualBox Ubuntu16.04 GUI machine and in CSC's cPouta cloud using a default Ubuntu16.04 server machine.
 
-The instructions below have been tested in VirtualBox GUI Ubuntu16.04 machine and in cPouta server Ubuntu16.04.
+The following instructions illustrate the case using a **cPouta default Ubuntu 16.04 server machine** and could be generalized to another cloud service.
 
 ## Create a cPouta Ubuntu16.04 virtual machine
-Use a configuration (flavor) with at least 8Gb of memory.
 
-If using a cloud service as cPouta, make sure that you have SSH access to the VM (security groups, public IP...).
+In cPouta create a virtual machine configuration (flavor) with at least 8Gb of memory. For example **Standard.Large**.
 
-**Note-gui-machine**: If you are using an Ubuntu16.06 GUI machine, create a user named "geo", so you can easily follow the general installation instructions (which assume such a user).
+Make sure that you have SSH access to the VM (in cPouta security groups, public IP, ssh keys...).
 
-**Note-server-machine**: if you are using for ex cPouta, you can use the default user ("cloud-user") during the installation. Remember to change the name where corresponds, it is also noted in the instructions below.
+Create a "geo" user and add to sudo group.
+
+**Note**: you can use any user account to follow these installation instructions but it needs to have sudo capabilities. The instructions below assume that you are loged in as "geo" user, adjust as necessary if you are using a different user. Or create a user named "geo", so you can easily follow the general installation instructions.
+
+## Installation
+The installation steps:
+- Packages installation
+- GeoNode Virtual Environment Setup
+- Install GeoNode to the Virtual Environment
+- Databases and Permissions
+- Finalize GeoNode Setup
+- Set the environment
+- Accessing and testing GeoNode
+- Troubleshooting
 
 
-### Packages Installation
+## Packages Installation
 The part follows the http://docs.geonode.org/en/master/tutorials/install_and_admin/geonode_install/install_geonode_application.html#packages-installation instructions.
 
 This part goes quite well by simply following the oficial documentation. Run these commands manually one by one, see comments below for information.
@@ -50,7 +64,7 @@ sudo apt-get update && sudo apt-get upgrade && sudo apt-get autoremove && sudo a
 
 ```
 
-### GeoNode Setup
+## GeoNode Virtual Environment Setup
 Following the official documentation: http://docs.geonode.org/en/master/tutorials/install_and_admin/geonode_install/install_geonode_application.html#geonode-setup
 
 This part already has some things that needed to be changed from the official documentation. Follow these instructions and visit the oficial documentation for some extra info and to compare with the commands below.
@@ -83,23 +97,23 @@ sudo apt install virtualenvwrapper
 ```
 - TODO: why these problems with the pip installation?
 
-The following commands are creating a "geonode" user and adding the "geo" (or "cloud-user") to the geonode's group.
-**Note-server-machine**: for the following commands use "cloud-user" instead geo user.
+The following commands are creating a "geonode" user and adding the "geo" to the geonode's group.
+
 ```
 sudo useradd -m geonode
-sudo usermod -a -G geonode  #sudo usermod -a -G geonode cloud-user
+sudo usermod -a -G geonode
 sudo chmod -Rf 775 /home/geonode/
-sudo su - geo # sudo su - cloud-user
+sudo su - geo
 ```
 
-### Install GeoNode to the geonode virtualenv
+## Install GeoNode to the Virtual Environment
 Activate the virtualenv and install the GeoNode Django project:
 
 ```
 workon geonode
 cd /home/geonode
 # note that you are working from now on in the geonode virtualenv so your prompt looks like:
-# (geonode) cloud-user@geonode-virtualmachine:/home/geonode$
+# (geonode) geo@geonode-virtualmachine:/home/geonode$
 
 pip install Django==1.8.18
 django-admin.py startproject --template=https://github.com/GeoNode/geonode-project/archive/2.8.0.zip -e py,rst,json,yml my_geonode
@@ -158,7 +172,7 @@ pip install -r requirements.txt --upgrade
 pip install -e . --upgrade --no-cache
 ```
 
-You may notice that you get these errors, but those seem an unsolvable conflict between geonode and pycsw requirements (TODO: find out more about this):
+You may notice that you get these errors, but those seem an unsolvable conflict between geonode and pycsw requirements (TODO: find out more about how to fix this issue):
 ```
 pycsw 2.0.3 has requirement OWSLib==0.10.3, but you'll have owslib 0.15.0 which is incompatible.
 pycsw 2.0.3 has requirement pyproj==1.9.3, but you'll have pyproj 1.9.5.1 which is incompatible.
@@ -168,7 +182,7 @@ pycsw 2.0.3 has requirement Shapely==1.3.1, but you'll have shapely 1.5.13 which
 This phase should be OK now.
 
 
-### Databases and Permissions
+## Databases and Permissions
 http://docs.geonode.org/en/master/tutorials/install_and_admin/geonode_install/create_geonode_db.html#databases-and-permissions
 
 ```
@@ -217,7 +231,7 @@ psql -U geonode geonode
 # Use \q to quit
 ```
 
-### Finalize GeoNode Setup
+## Finalize GeoNode Setup
 http://docs.geonode.org/en/master/tutorials/install_and_admin/geonode_install/create_geonode_db.html#finalize-geonode-setup
 
 Final settings for a basic GeoNode installation to run. The following instructions differ substantially from the official documentation but have been tested and work.
@@ -226,7 +240,7 @@ Final settings for a basic GeoNode installation to run. The following instructio
 workon geonode
 cd /home/geonode/my_geonode
 # your promt looks like:
-# (geonode) cloud-user@geonode-virtualmachine:/home/geonode/my_geonode$
+# (geonode) geo@geonode-virtualmachine:/home/geonode/my_geonode$
 ```
 
 Edit the */home/geonode/my_geonode/my_geonode/settings.py* file:
@@ -244,10 +258,13 @@ cp my_geonode/local_settings.py.sample my_geonode/local_settings.py
 TODO: revisit this documentation link and review what changes would be necessary, so far with the default values all seems to work OK.
 
 
-###  Set the environment and paver http://docs.geonode.org/en/master/tutorials/install_and_admin/geonode_install/create_geonode_db.html
+## Set the environment
+http://docs.geonode.org/en/master/tutorials/install_and_admin/geonode_install/create_geonode_db.html
 
-Firs, stop all the services and reset the GeoNode installation.
+First, install paver and pyyaml (in case it is not installed yet) stop all the services and reset the GeoNode installation.
 ```
+sudo apt install python-paver
+
 sudo service apache2 stop
 sudo service tomcat8 stop
 # Being sure other services are stopped
@@ -255,6 +272,7 @@ sudo service tomcat8 stop
 # Hard Reset
 # Warning: This will delete all data you created until now.
 paver reset_hard
+sudo pip install pyyaml
 
 # Cleanup folders and old DB Tables
 # Hard Reset
@@ -291,9 +309,9 @@ sudo chown -Rf geonode: my_geonode/uploaded/
 sudo chown -Rf geonode: my_geonode/static*
 ```
 
-Before yoy continue you need to do some modifications to the GeoNode's own firewall settings.
+Before you continue you need to do some modifications to the GeoNode's own firewall settings.
 ```
-vim /home/cloud-user/Envs/geonode/local/lib/python2.7/site-packages/django/http/request.py
+vim /home/geo/Envs/geonode/local/lib/python2.7/site-packages/django/http/request.py
 
 # ---> Change lines
 ...
@@ -311,7 +329,40 @@ vim /home/cloud-user/Envs/geonode/local/lib/python2.7/site-packages/django/http/
 ```
 TODO: find out why setting the firewall rules in the my_geonode/settings.py file does not casdade to the reques.py file edited above, which would be the logical way to set this.
 
-Setup and start the system in DEV mode
+
+## Final settings
+
+### Install GeoServer pringing plugin
+
+Go to the download page for the GeoServer version you have in your installation, and download to the GeoServer libraries folder (/home/geonode/my_geonode/geoserver/geoserver/WEB-INF/lib)
+
+For example if your GeoServer version is 2.12.2:
+
+wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.2/extensions/geoserver-2.12.2-printing-plugin.zip
+
+The plugin will be installed next time you restart the GeoSever service.
+
+### Set Apache LogLevel
+
+Change the level of information to log by Apache:
+
+```
+sudo vim /etc/apache2/apache2.conf
+
+Edit to:
+
+# LogLevel: Control the severity of messages logged to the error_log.
+# Available values: trace8, ..., trace1, debug, info, notice, warn,
+# error, crit, alert, emerg.
+# It is also possible to configure the log level for particular modules, e.g.
+# "LogLevel info ssl:warn"
+#
+LogLevel info
+```
+
+## Start GeoNode
+
+Setup and start the system in DEV mode:
 
 ```
 paver setup
@@ -324,8 +375,9 @@ paver start
 # This command allows you to start GeoNode in development mode
 ```
 
+## Accessing and testing GeoNode
 
-## Accessing GeoNode
+### Accessing GeoNode
 
 After starting GeoNode with *paver start* Your terminal keeps on giving you the logs of the server. You can exit this view with ctrl+C, the server remains up and running.
 
@@ -335,7 +387,7 @@ Also Geoserver at http://<your-public-ip>:8080/geoserver
 
 **Make sure that your virtual machine has the firewall rules properly set (security groups in cPouta). Open the ports 8000 and 8080 as necessary.**
 
-## Logs and data directory
+### Logs and data directory
 To see the logs once server is running:
 - http://docs.geonode.org/en/master/tutorials/admin/debug_geonode/
 - tail /var/log/apache2/error.log
@@ -344,6 +396,10 @@ To see the logs once server is running:
 
 GeoServer data directory:
 Data directory 	/home/geonode/my_geonode/geoserver/data
+
+GeoSever extensions directory:
+/home/geonode/my_geonode/geoserver/geoserver/WEB-INF/lib
+
 
 Apache2 running in port 80
 
@@ -361,80 +417,16 @@ paver start
 # if Port 8080 is already in use... repeat until it works
 ```
 
-
-### Troubleshooting
-#### Reseting installation
+## Troubleshooting
+### Reseting installation
 If you run into some errors during the paver phase or need to change some settings, use the following commands to reset the installation (Warning: not tested with datasets loaded, data could be erased):
 ```
+workon geonode
+cd /home/geonode/my_geonode
+
+sudo service apache2 stop
+sudo service tomcat8 stop
 paver reset_hard
-paver setup
 paver sync
 paver start
 ```
-
-#### GeoServer version
-TESTING Geoserver
-http://193.167.189.204:8080/geoserver/web/
-Works normally, got GS version 2.12.2 (were as in the docker installation you get 2.13... and also postgresql 9.6, here 9.5)
-In the Geoserver gui, there is a geonode icon which sends you to http://localhost:8000/o/authorize/?response_type=code&client_id=Jrchz2oPY3akmzndmgUTYrs9gczlgoV20YPSvqaV&scope=write&redirect_uri=http://localhost:8080/geoserver/index.html
-... how would this be needed to set so that it uses the actual ip, instead of localhost?
-
-#### Where the GeoNode firewall settings should be fixed
-For some reason these would not affect the installation so are not needed. Simply edit in the request.py mentioned above. Here are these for reference:
-
-Stop the runnin app with ctrl+c and paver stop
-
-Added ip to ALLOWED_HOSTS in settings.py
-```
-ALLOWED_HOSTS = ['django','193.167.189.204','localhost','127.0.0.1','::1'] if os.getenv('ALLOWED_HOSTS') is None \
-    else re.split(r' *[,|:|;] *', os.getenv('ALLOWED_HOSTS'))
-
-PROXY_ALLOWED_HOSTS += ('nominatim.openstreetmap.org','193.167.189.204','localhost','127.0.0.1','::1')
-``` 
-
-Reset paver: paver reset_hard (only stoping and start does not take changes into effect)
-
-Restart paver: paver start
-
-
-#### Install firevox to text localhost
-Install firefox for testing locally
-```
-sudo apt install firefox
-```
-
-Test with http://localhost:8000
-
-
-
-
-### Image in cPouta with basic steps DONE
-For testing, htere is a semi ready image in cpouta "geonode-server-installed" with all the steps up to just before testing paver.
-
-Use that image to test the configuration of the paver.
-
-1. launch new VM from image
-2. First thing, cp my_geonode/local_settings.py.sample my_geonode/local_settings.py (forgot to do that before creating the image)
-3.  workon geonode
-4. Make changes as needed...
-
-
-4. paver setup from /home/geonode/my_geonode
-
-The cPouta machine better have 8Gb memory, otherwise it starts to fail pretty quicly due to lack of memory.
-
-
-### TODOs
-
-Check admis workshop:
-http://geonode.org/dev-workshop/#/3
-
-
-
-See:
-netstat -altpvn
-
-And
-sudo lsof -i -n -P
-sudo netstat -tulnp
-sudo lsof -i -n -P
