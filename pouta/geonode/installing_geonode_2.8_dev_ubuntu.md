@@ -1,29 +1,33 @@
-# Installation of Geonode in Ubuntu16.04
-Start with a clean Ubuntu16.04 virtual machine. It can be a GUI machine or a server machine and it can be running locally in for ex. VirtualBox or in the cloud in for ex CSC's cPouta.
+# Manual installation of Geonode in Ubuntu16.04
+**Note:** Use the Quick Installation if possible. Manually installing GeoNode requires a lot of manual settings. 
+
+Start with a clean Ubuntu16.04 virtual machine. It can be a GUI machine or a server machine and it can be running locally in for ex. VirtualBox or in the cloud for ex in CSC's cPouta.
 
 Some differences may arise depending on the starting machine and what is installed in it by default. For example the tests with a default Ubuntu 16.04 server machine have commonly needed the installation of some packages that were not needed when using a default Ubuntu 16.04 GUI machine. The differences are marked with **Note-server-vm: ...** .
 
-The following instructions are based on the official documentation but include some modifications. The full set of minimum installation commands and settings is found here so you only need to follow these instruction.
+The following instructions are based on the official documentation but include some modifications. The full set of minimum installation commands and settings is found here so you only need to follow these instructions.
 
 For reference, the official documentation can be found at:
 http://docs.geonode.org/en/master/tutorials/install_and_admin/geonode_install/
 
 The instructions below have been tested in VirtualBox Ubuntu16.04 GUI machine and in CSC's cPouta cloud using a default Ubuntu16.04 server machine.
 
-The following instructions illustrate the case using a **cPouta default Ubuntu 16.04 server machine** and could be generalized to another cloud service.
+The following instructions illustrate the case using a **cPouta default Ubuntu 16.04 server machine** but could be probably apply in another cloud service.
 
 ## Create a cPouta Ubuntu16.04 virtual machine
 
-In cPouta create a virtual machine configuration (flavor) with at least 8Gb of memory. For example **Standard.Large**.
+In cPouta create a virtual machine configuration (flavor) with at least 8Gb of memory. For example **Standard.Large** flavor.
 
-Make sure that you have SSH access to the VM (in cPouta security groups, public IP, ssh keys...).
+Make sure that you have SSH access to the VM (in cPouta this means having properly configured security groups, public IP, ssh keys...).
 
-Create a "geo" user and add to sudo group.
+The instructions below assume that you are loged in as the "geo" user. It will be easier to follow the installation instructions if you create a "geo" user.
 
-**Note**: you can use any user account to follow these installation instructions but it needs to have sudo capabilities. The instructions below assume that you are loged in as "geo" user, adjust as necessary if you are using a different user. Or create a user named "geo", so you can easily follow the general installation instructions.
+cPouta VM images come with a single user named "cloud-user". Log in to the machine as "cloud-user" and create a "geo" user. Then add this new user to the sudo group.
+
+**Note**: you can use any user account to follow these installation instructions but it needs to have sudo capabilities. If you are using a different user change the commands as necessary.
 
 ## Installation
-The installation steps:
+The installation steps in summary:
 - Packages installation
 - GeoNode Virtual Environment Setup
 - Install GeoNode to the Virtual Environment
@@ -35,9 +39,9 @@ The installation steps:
 
 
 ## Packages Installation
-The part follows the http://docs.geonode.org/en/master/tutorials/install_and_admin/geonode_install/install_geonode_application.html#packages-installation instructions.
+This part follows the http://docs.geonode.org/en/master/tutorials/install_and_admin/geonode_install/install_geonode_application.html#packages-installation instructions.
 
-This part goes quite well by simply following the oficial documentation. Run these commands manually one by one, see comments below for information.
+This part goes quite well by simply following the oficial documentation. Run these commands manually one by one, see comments along with the commands for more details.
 
 ```
 sudo apt-get update
@@ -65,7 +69,7 @@ sudo apt-get update && sudo apt-get upgrade && sudo apt-get autoremove && sudo a
 ```
 
 ## GeoNode Virtual Environment Setup
-Following the official documentation: http://docs.geonode.org/en/master/tutorials/install_and_admin/geonode_install/install_geonode_application.html#geonode-setup
+Follows the official documentation: http://docs.geonode.org/en/master/tutorials/install_and_admin/geonode_install/install_geonode_application.html#geonode-setup
 
 This part already has some things that needed to be changed from the official documentation. Follow these instructions and visit the oficial documentation for some extra info and to compare with the commands below.
 
@@ -87,17 +91,17 @@ source ~/.bashrc
 
 mkvirtualenv --no-site-packages geonode
 ```
-**Note-server-machine**: when installing in server machine virtualenv you may get an error about path not found, for ex '*ERROR: virtualenvwrapper could not find virtualenv in your path*'.
+**Note-server-machine**: when installing `virtualenv` in a server machine you may get an error about path not found, for ex *'ERROR: virtualenvwrapper could not find virtualenv in your path'*.
 
-If installing in server machine run this commands:
-
+If you are installing in a server machine run this commands:
 ```
 sudo apt install virtualenv
 sudo apt install virtualenvwrapper
 ```
+
 - TODO: why these problems with the pip installation?
 
-The following commands are creating a "geonode" user and adding the "geo" to the geonode's group.
+The following commands create a "geonode" user and add the user "geo" to the "geonode" group.
 
 ```
 sudo useradd -m geonode
@@ -108,7 +112,6 @@ sudo su - geo
 
 ## Install GeoNode to the Virtual Environment
 Activate the virtualenv and install the GeoNode Django project:
-
 ```
 workon geonode
 cd /home/geonode
@@ -116,13 +119,16 @@ cd /home/geonode
 # (geonode) geo@geonode-virtualmachine:/home/geonode$
 
 pip install Django==1.8.18
+
 django-admin.py startproject --template=https://github.com/GeoNode/geonode-project/archive/2.8.0.zip -e py,rst,json,yml my_geonode
 
 # If you get an error like: CommandError: [Errno 13] Permission denied: '/home/geonode/my_geonode'...
-# log out and log in for permissions to be active
+# log out and log in for permissions of your "geo" user to be active
 ```
 
-Install GeoNode with the commands below. Here you will need to make several changes to the installation settings you get from the git repository and some extra commands not mentioned in the documentation.
+Install GeoNode with the commands below.
+
+Here you will need to make several changes to the installation settings you get from the git repository and some extra commands not mentioned in the official documentation.
 
 First go to the GeoNode project folder and check for the gdal version installed in your system and what pygdal versions are available.
 ```
@@ -135,10 +141,9 @@ gdal-config --version
 pip install pygdal==
 ```
 
-Edit the requirements.txt with the pygdal version you found plus the following versions and add and remove as indicated here:
+Edit the requirements.txt with the pygdal version you found plus the following versions and add and remove as indicated in the `requirements.txt` file:
 ```
 vim requirements.txt
-
 ```
 
 Edit the file as follwos:
@@ -158,11 +163,14 @@ celery==4.1.0
 
 # Add the following line to add the geonode repository:
 -e git://github.com/GeoNode/geonode.git@2.8.0#egg=geonode
+
+# leave the rest of the lines as they were in the original file
+# ...
 ```
 
 This is an example of the requirements.txt file after the above mentioned edits:
 ```
-
+TODO
 ```
 
 Now for the installation:
@@ -172,7 +180,7 @@ pip install -r requirements.txt --upgrade
 pip install -e . --upgrade --no-cache
 ```
 
-You may notice that you get these errors, but those seem an unsolvable conflict between geonode and pycsw requirements (TODO: find out more about how to fix this issue):
+You may notice that you get the errors below, but those seem an unsolvable conflict between geonode and pycsw requirements (TODO: find out more about how to fix this issue):
 ```
 pycsw 2.0.3 has requirement OWSLib==0.10.3, but you'll have owslib 0.15.0 which is incompatible.
 pycsw 2.0.3 has requirement pyproj==1.9.3, but you'll have pyproj 1.9.5.1 which is incompatible.
@@ -183,8 +191,10 @@ This phase should be OK now.
 
 
 ## Databases and Permissions
+The original official instructions:
 http://docs.geonode.org/en/master/tutorials/install_and_admin/geonode_install/create_geonode_db.html#databases-and-permissions
 
+Set up a new PostgreSQL user and databases:
 ```
 sudo -u postgres createuser -P geonode
 # give a password for the new database user
@@ -206,7 +216,7 @@ sudo -u postgres psql -d geonode_data -c 'GRANT ALL ON spatial_ref_sys TO PUBLIC
 sudo -u postgres psql -d geonode_data -c 'GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO geonode;'
 ```
 
-Now we are going to change user access policy for local connections in file pg_hba.conf
+Now change user access policy for local connections in file `pg_hba.conf`:
 ```
 sudo vim /etc/postgresql/9.5/main/pg_hba.conf
 ```
@@ -221,7 +231,7 @@ Into
 local   all             all                                     trust
 ```
 
-**Note**: make sure setting this to trust is safe enough. (Trust: Allow the connection unconditionally. This method allows anyone that can connect to the PostgreSQL database server to login as any PostgreSQL user they wish, without the need for a password or any other authentication. See Section 19.3.1 for details.)
+**Note**: make sure setting this to trust is safe enough. (Trust: Allow the connection unconditionally. This method allows anyone that can connect to the PostgreSQL database server to login as any PostgreSQL user they wish, without the need for a password or any other authentication.)
 
 Restart PostgreSQL:
 ```
@@ -232,11 +242,12 @@ psql -U geonode geonode
 ```
 
 ## Finalize GeoNode Setup
+The original official instructions:
 http://docs.geonode.org/en/master/tutorials/install_and_admin/geonode_install/create_geonode_db.html#finalize-geonode-setup
 
 Final settings for a basic GeoNode installation to run. The following instructions differ substantially from the official documentation but have been tested and work.
 ```
-# If not already active let’s activate the new geonode Python Virtual Environment:
+# If not already active, activate the `geonode` Python Virtual Environment:
 workon geonode
 cd /home/geonode/my_geonode
 # your promt looks like:
@@ -412,6 +423,7 @@ cd /home/geonode/my_geonode
 sudo service apache2 stop
 sudo service tomcat8 stop
 paver stop
+paver sync
 paver start
 
 # if Port 8080 is already in use... repeat until it works
@@ -419,7 +431,7 @@ paver start
 
 ## Troubleshooting
 ### Reseting installation
-If you run into some errors during the paver phase or need to change some settings, use the following commands to reset the installation (Warning: not tested with datasets loaded, data could be erased):
+If you run into some errors during the paver phase or need to change some settings, use the following commands to reset the installation (Warning: THIS WILL DELETE THE WHOLE INSTALLATION INC DATA LAYERS):
 ```
 workon geonode
 cd /home/geonode/my_geonode
